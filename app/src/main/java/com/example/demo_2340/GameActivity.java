@@ -80,10 +80,34 @@ public class GameActivity extends AppCompatActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         // TODO logic to move the player (remember to check collisions)
+        switch(keyCode){
+            case KeyEvent.KEYCODE_W:
+                playerY -= 50;
+                break;
+            case KeyEvent.KEYCODE_A:
+                playerX -= 50;
+                break;
+            case KeyEvent.KEYCODE_S:
+                playerY += 50;
+                break;
+            case KeyEvent.KEYCODE_D:
+                playerX += 50;
+                break;
+        }
+        playerView.updatePosition(playerX, playerY);
+        checkCollisions();
+        return true;
     }
 
     private void initializeDots() {
         // TODO Create and add dots with random positions
+        for (int i = 0; i < 20; i++){
+            float randomX = random.nextFloat() * screenWidth;
+            float randomY = random.nextFloat() * screenHeight;
+            int radius = 50;
+            Dot dot = new Dot(randomX, randomY, radius);
+            dots.add(dot);
+        }
     }
 
     /*
@@ -100,11 +124,24 @@ public class GameActivity extends AppCompatActivity {
     // Maintains 20 dots on screen
     private void respawnDotsIfNeeded() {
         // TODO: if dots drop below 20, respawn dots
+        int visibleDotCount = dots.size();
+        int dotsToRespawn = MAX_DOTS - visibleDotCount;
+        for (int i = 0; i < dotsToRespawn; i++){
+            respawnDot();
+        }
     }
 
     // Recreates the dots. Respawn mechanic
     private void respawnDot() {
         //TODO: randomly spawn a dot (need to make both UI and background class)
+        float randomX = random.nextFloat() * screenWidth;
+        float randomY = random.nextFloat() * screenHeight;
+        int radius = 50;
+        Dot dot = new Dot(randomX, randomY, radius);
+        dots.add(dot);
+        DotView dotView = new DotView(this, dot);
+        gameLayout.addView(dotView);
+        dotViewMap.put(dot, dotView);
     }
 
     /*
